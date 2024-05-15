@@ -9,11 +9,13 @@ class ProductCubit extends Cubit<ProductState> {
   late List<Product> products;
   ProductCubit(this.productRepo) : super(ProductInitial());
 
-  List<Product> getAllProduct() {
+  List<Product>? getAllProduct() {
     productRepo.allProducts().then((products) {
       emit(ProductLoaded(products));
       this.products = products;
+    }).then((_) {
+      return products;
     });
-    return products;
+    return null;
   }
 }
