@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'light_bloc.dart';
+import 'counter_bloc.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,35 +10,45 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Bloc Example',
+      title: 'Flutter Counter Example',
       home: BlocProvider(
-        create: (context) => LightBloc(),
-        child: LightPage(),
+        create: (context) => CounterBloc(),
+        child: CounterPage(),
       ),
     );
   }
 }
 
-class LightPage extends StatelessWidget {
+class CounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Flutter Bloc Example')),
+      appBar: AppBar(title: Text('Flutter Counter Example')),
       body: Center(
-        child: BlocBuilder<LightBloc, LightState>(
+        child: BlocBuilder<CounterBloc, CounterState>(
           builder: (context, state) {
+            int counterValue = state is CounterInitial ? state.counterValue : (state as CounterValueChanged).counterValue;
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  state is LightOn ? Icons.lightbulb : Icons.lightbulb_outline,
-                  size: 100,
-                  color: state is LightOn ? Colors.yellow : Colors.grey,
+                Text(
+                  'Counter Value: $counterValue',
+                  style: TextStyle(fontSize: 24),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => context.read<LightBloc>().add(ToggleLight()),
-                  child: Text(state is LightOn ? 'Turn Off' : 'Turn On'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => context.read<CounterBloc>().add(IncrementCounter()),
+                      child: Text('Increment'),
+                    ),
+                    SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () => context.read<CounterBloc>().add(DecrementCounter()),
+                      child: Text('Decrement'),
+                    ),
+                  ],
                 ),
               ],
             );
